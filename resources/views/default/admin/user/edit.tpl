@@ -12,7 +12,7 @@
 
     <!-- Main content -->
     <section class="content">
-        <div cass="row">
+        <div class="row">
             <div class="col-md-12">
                 <div id="msg-success" class="alert alert-success alert-dismissable" style="display: none;">
                     <button type="button" class="close" id="ok-close" aria-hidden="true">&times;</button>
@@ -38,6 +38,13 @@
                             <div class="row">
                                 <fieldset class="col-sm-6">
                                     <legend>帐号信息</legend>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">昵称</label>
+
+                                        <div class="col-sm-9">
+                                            <input class="form-control" id="user_name" value="{$user->user_name}">
+                                        </div>
+                                    </div>
                                     <div class="form-group">
                                         <label class="col-sm-3 control-label">邮箱</label>
 
@@ -106,7 +113,11 @@
                                         <label class="col-sm-3 control-label">自定义加密</label>
 
                                         <div class="col-sm-9">
-                                            <input class="form-control" id="method" value="{$user->method}">
+                                            <select class="form-control" id="method">
+                                            {foreach $method as $cipher}
+                                               <option value="{$cipher}" {if $user->method==$cipher}selected="selected"{/if} >{$cipher}</option>  
+                                            {/foreach}
+                                            </select>  
                                         </div>
                                     </div>
                                 </fieldset>
@@ -120,23 +131,20 @@
                                         <div class="col-sm-9">
                                             <div class="input-group">
                                                 <input class="form-control" id="transfer_enable" type="number"
-                                                       value="{$user->transfer_enable}">
+                                                       value="{$user->enableTrafficInGB()}">
 
-                                                <div class="input-group-addon">字节</div>
+                                                <div class="input-group-addon">GiB</div>
                                             </div>
                                         </div>
                                     </div>
+
 
                                     <div class="form-group">
                                         <label class="col-sm-3 control-label">已用流量</label>
 
                                         <div class="col-sm-9">
-                                            <div class="input-group">
-                                                <input class="form-control" id="usedTraffic" type="number"
-                                                       value="{$user->u}" readonly>
-
-                                                <div class="input-group-addon">字节</div>
-                                            </div>
+                                            <input class="form-control" id="traffic_usage" type="text"
+                                                   value="{$user->usedTraffic()}" readonly>
                                         </div>
                                     </div>
                                 </fieldset>
@@ -185,6 +193,7 @@
                 url: "/admin/user/{$user->id}",
                 dataType: "json",
                 data: {
+                    user_name: $("#user_name").val(),
                     email: $("#email").val(),
                     pass: $("#pass").val(),
                     port: $("#port").val(),
